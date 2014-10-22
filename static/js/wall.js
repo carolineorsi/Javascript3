@@ -16,9 +16,6 @@ $("#messages-clear").click( function (evt) {
 
     });
 
-// $("#messages-clear").click( function (evt) {
-//     $("#message-container").load("/api/wall/clear");
-//     });
 
 function loadMessages(result) {
     console.log(result);
@@ -28,7 +25,6 @@ function loadMessages(result) {
             console.log(result.messages[i].message);
             $("#message-container").prepend("<li class='list-group-item'>" + result.messages[i].message + "</li>");
         }
-        // $("#message-container > li").addClass("list-group-item");
     }
 
 }
@@ -58,25 +54,36 @@ function addMessage(msg) {
     $("#message-send").prop('disabled', true);
     setTimeout(function() {
         $("#message-send").prop('disabled', false);
-        // $("#message-send").click( function () {
-        //     alert("STOP");
-        // });
     },
-    10000);
+    5000);
+
+    // var newmsg = $(msg).html();
+    // console.log(newmsg);
+  
 
     $.post(
         "/api/wall/add",
         {'m': msg},
         function (data) {
-            // var allmessages = data["messages"];
-            // console.log(allmessages[-1]);
-            $("#message-container").prepend("<li class='list-group-item'>" + msg + "</li>");
-            
+        // var text = $(msg).text("new text");
+
+            $("#message-container").prepend("<li class='list-group-item'>" + data.messages[data.messages.length - 1].message + "</li>");
             console.log("addMessage: ", data);
+            
             displayResultStatus(data.result);
+            if (data.result === "Your message is empty") {
+                console.log("confirm empty");
+                $("#sent-result").removeClass("alert alert-success");
+                $("#sent-result").addClass("alert alert-warning");
+            }
+            else {
+                $("#sent-result").removeClass("alert alert-warning");
+                $("#sent-result").addClass("alert alert-success");
+            }
         }
     );
 }
+
 
 
 /**
@@ -108,11 +115,3 @@ function displayResultStatus(resultMsg) {
         }, 2000);
     });
 }
-
-// $("#message-send").click (function() {
-//     $("#message-send").prop('disabled', true);
-//     window.setTimeout(function() {
-//         $("message-send").prop('disabled', false);
-//     },
-//     5000);
-//     });

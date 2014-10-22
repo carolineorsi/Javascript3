@@ -2,7 +2,7 @@ import json
 
 from flask import Flask, request, render_template, make_response, redirect
 
-from api import wall_list, wall_add, wall_error, clear_session
+from api import wall_list, wall_add, wall_error, clear_session, parse_html
 
 
 app = Flask(__name__)
@@ -69,6 +69,7 @@ def add_message():
     # (to get things from a GET response, we've used request.args.get();
     # this is the equivalent for getting things from a POST response)
     msg = request.form.get('m').strip()
+    msg = parse_html(msg) #need to create this
 
     if msg is None:
         result = wall_error("You did not specify a message to set.")
