@@ -59,3 +59,6 @@ def wall_add(msg):
     result["result"] = "Message Received"
 
     return result
+
+def clear_session():
+    session.clear()

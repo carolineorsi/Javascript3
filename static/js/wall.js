@@ -3,8 +3,35 @@ $(document).ready(function () {
     // tags loads the JS. By putting this inside a jQuery $(document).ready()
     // function, this code only gets run when the document finishing loading.
 
+    // $(".list-group-item").load("/api/wall/list");
+    $.get("/api/wall/list", loadMessages);
     $("#message-form").submit(handleFormSubmit);
+
 });
+
+
+$("#messages-clear").click( function (evt) {
+    $("#message-container").empty();
+    $.get("api/wall/clear", loadMessages);
+
+    });
+
+// $("#messages-clear").click( function (evt) {
+//     $("#message-container").load("/api/wall/clear");
+//     });
+
+function loadMessages(result) {
+    console.log(result);
+    if (result.result == "OK") {
+        console.log("Got messages");
+        for (var i=0; i<result.messages.length; i++) {
+            console.log(result.messages[i].message);
+            $("#message-container").prepend("<li class='list-group-item'>" + result.messages[i].message + "</li>");
+        }
+        // $("#message-container > li").addClass("list-group-item");
+    }
+
+}
 
 
 /**
@@ -28,10 +55,23 @@ function handleFormSubmit(evt) {
  * Makes AJAX call to the server and the message to it.
  */
 function addMessage(msg) {
+    $("#message-send").prop('disabled', true);
+    setTimeout(function() {
+        $("#message-send").prop('disabled', false);
+        // $("#message-send").click( function () {
+        //     alert("STOP");
+        // });
+    },
+    10000);
+
     $.post(
         "/api/wall/add",
         {'m': msg},
         function (data) {
+            // var allmessages = data["messages"];
+            // console.log(allmessages[-1]);
+            $("#message-container").prepend("<li class='list-group-item'>" + msg + "</li>");
+            
             console.log("addMessage: ", data);
             displayResultStatus(data.result);
         }
@@ -68,3 +108,11 @@ function displayResultStatus(resultMsg) {
         }, 2000);
     });
 }
+
+// $("#message-send").click (function() {
+//     $("#message-send").prop('disabled', true);
+//     window.setTimeout(function() {
+//         $("message-send").prop('disabled', false);
+//     },
+//     5000);
+//     });
