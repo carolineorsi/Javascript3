@@ -64,7 +64,18 @@ def wall_add(msg):
 def clear_session():
     session.clear()
 
+class HTMLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
+
+
 def parse_html(msg):
-    parser = HTMLParser()
+    parser = HTMLStripper()
     parser.feed(msg)
-    return msg
+    return parser.get_data()
+
