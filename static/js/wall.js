@@ -57,26 +57,19 @@ function addMessage(msg) {
     },
     5000);
 
-    // var newmsg = $(msg).html();
-    // console.log(newmsg);
-  
-
     $.post(
         "/api/wall/add",
         {'m': msg},
         function (data) {
-        // var text = $(msg).text("new text");
-
-            $("#message-container").prepend("<li class='list-group-item'>" + data.messages[data.messages.length - 1].message + "</li>");
             console.log("addMessage: ", data);
             
             displayResultStatus(data.result);
             if (data.result === "Your message is empty") {
-                console.log("confirm empty");
                 $("#sent-result").removeClass("alert alert-success");
                 $("#sent-result").addClass("alert alert-warning");
             }
             else {
+                $("#message-container").prepend("<li class='list-group-item'>" + data.messages[data.messages.length - 1].message + "</li>");
                 $("#sent-result").removeClass("alert alert-warning");
                 $("#sent-result").addClass("alert alert-success");
             }
